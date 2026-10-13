@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Don't Take the Bait: Phishing Awareness Training</title>
+    <style>
+        :root {
+            --bg: #0B1026; --p: #151B3D; --p2: #101634; --cy: #22D3EE;
+            --pk: #FF3D81; --am: #FFB020; --gr: #34D399; --vi: #8B5CF6;
+            --tx: #E5E7EB; --mu: #94A3B8;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--tx); font: 16px/1.55 system-ui, sans-serif; }
+        header { position: sticky; top: 0; z-index: 5; background: #0B1026ee; backdrop-filter: blur(6px); border-bottom: 1px solid #2A3160; }
+        .bar { height: 4px; background: linear-gradient(90deg, var(--cy), var(--pk), var(--am)); width: 100%; }
+        nav { display: flex; gap: 6px; overflow-x: auto; padding: 8px 12px; max-width: 1000px; margin: auto; }
+        nav button { flex: none; background: var(--p); color: var(--tx); border: 1px solid #2A3160; border-radius: 999px; padding: 5px 12px; font-size: 13px; cursor: pointer; }
+        nav button.on { background: var(--cy); color: #0B1026; font-weight: 700; }
+        .hero { padding: 56px 24px 40px; max-width: 1000px; margin: auto; text-align: center; }
+        .hero small { color: var(--mu); letter-spacing: .1em; font-weight: 700; }
+        .hero h1 { font-size: clamp(34px, 7vw, 64px); margin: 8px 0; line-height: 1.05; }
+        .hero h1 span { color: var(--pk); }
+        .hero h2 { color: var(--cy); margin: 0 0 14px; }
+        .pill { display: inline-block; margin: 4px 6px 0 0; padding: 4px 14px; border-radius: 999px; color: #0B1026; font-weight: 700; font-size: 13px; }
+        main { max-width: 1000px; margin: auto; padding: 0 20px 80px; }
+        section { padding: 26px 0; border-bottom: 1px solid #1d2450; scroll-margin-top: 90px; }
+        .k { font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--cy); text-transform: uppercase; }
+        h2.t { font-size: 30px; margin: 2px 0 16px; color: #fff; }
+        .grid { display: grid; gap: 12px; }
+        .cols-2 { grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); }
+        .cols-3 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+        .cols-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+        @media(max-width:760px) { .cols-2, .cols-3, .cols-4 { grid-template-columns: 1fr; } }
+        .card { background: var(--p); border-top: 3px solid var(--cy); border-radius: 8px; padding: 12px 14px; }
+        .card b { color: var(--cy); display: block; margin-bottom: 4px; font-size: 17px; }
+        .call { background: var(--p); border-left: 5px solid var(--vi); border-radius: 6px; padding: 10px 14px; margin: 12px 0; }
+        .call b { color: var(--vi); display: block; margin-bottom: 4px; }
+        .wrap { overflow-x: auto; border: 1px solid #2A3160; border-radius: 6px; margin: 12px 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+        th { background: var(--vi); text-align: left; padding: 8px; color: #fff; }
+        td { padding: 8px; border-bottom: 1px solid #2A3160; vertical-align: top; }
+        tr:nth-child(even) td { background: var(--p2); }
+        td:first-child { color: var(--cy); font-weight: 700; }
+        .mock { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-top: 12px; }
+        @media(max-width:760px) { .mock { grid-template-columns: 1fr; } }
+        .em { background: #F8FAFC; color: #111827; border: 2px solid var(--cy); border-radius: 6px; padding: 14px; font-size: 14.5px; }
+        .em p { margin: 0 0 8px; }
+        .em-head { border-bottom: 1px solid #CBD5E1; padding-bottom: 8px; margin-bottom: 12px; font-family: monospace; }
+        .tag { cursor: pointer; background: var(--pk); color: #fff; border-radius: 10px; padding: 0 6px; font-size: 12px; font-weight: 800; margin-left: 4px; display: inline-block; }
+        .fl { padding: 6px 10px; margin-bottom: 8px; border-left: 4px solid var(--pk); background: var(--p); border-radius: 4px; transition: .2s; }
+        .fl b { color: var(--pk); display: block; }
+        #quiz { background: var(--p); border-radius: 12px; padding: 22px; margin-top: 20px; border: 1px solid #2A3160; }
+        .opt { display: block; width: 100%; text-align: left; background: var(--p2); color: var(--tx); border: 2px solid #2A3160; border-radius: 8px; padding: 10px 14px; margin: 8px 0; font-size: 15px; cursor: pointer; }
+        .opt:hover:not(:disabled) { border-color: var(--cy); }
+        .opt.ok { border-color: var(--gr); background: #0f3a2c; }
+        .opt.no { border-color: var(--pk); background: #3d1226; }
+        .fb { margin-top: 10px; padding: 10px 14px; border-radius: 8px; background: var(--p2); border-left: 4px solid var(--am); }
+        .btn { background: var(--cy); color: #0B1026; border: 0; border-radius: 8px; padding: 10px 20px; font-weight: 800; cursor: pointer; margin-top: 12px; }
+        .pb { height: 8px; background: #2A3160; border-radius: 4px; overflow: hidden; margin-bottom: 12px; }
+        .pb i { display: block; height: 100%; background: var(--gr); width: 0; transition: .3s; }
+        footer { text-align: center; color: var(--mu); padding: 30px; font-size: 13px; border-top: 1px solid #2A3160; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="bar"></div>
+    <nav id="nav"></nav>
+</header>
+
+<div class="hero">
+    <small>CYBERSECURITY AWARENESS PROGRAM | CODEALPHA TASK 2</small>
+    <h1>DON'T TAKE THE <span>BAIT</span></h1>
+    <h2>Phishing Awareness Training Module</h2>
+    <div style="color:var(--mu); font-weight: 600;">Recognize | Resist | Report</div>
+    <div style="margin-top:12px">
+        <span class="pill" style="background:var(--cy)">Phishing emails</span>
+        <span class="pill" style="background:var(--pk)">Fake websites</span>
+        <span class="pill" style="background:var(--am)">Social engineering</span>
+        <span class="pill" style="background:var(--gr)">Real cases</span>
+        <span class="pill" style="background:var(--vi)">Interactive quiz</span>
+    </div>
+</div>
+
+<main id="m"></main>
+
+<footer>Phishing Awareness Training | Recognize - Resist - Report</footer>
+
+<script>
+const D = {
+  "S": [
+    {
+      "title": "Agenda and Learning Objectives",
+      "kick": "WHAT YOU WILL GET FROM THIS SESSION",
+      "blocks": [
+        {
+          "t": "cards", "cols": 3,
+          "items": [
+            ["1. Understand", "What phishing is, why it works and what it costs."],
+            ["2. Recognize", "Fake emails, texts, calls and websites."],
+            ["3. Decode", "Social engineering tricks attackers use on emotions."],
+            ["4. Learn", "Real-world cases and what went wrong."],
+            ["5. Defend", "Personal and organizational best practices."],
+            ["6. Test", "Quiz with answer key, myths vs facts, checklist."]
+          ]
+        },
+        { "t": "call", "k": "aid", "title": "By the end you can:", "text": "identify the 8 red flags of a phishing email, verify a website, name 5+ social engineering tactics, respond correctly if you already clicked, and report incidents to the right place." },
+        { "t": "call", "k": "ex", "title": "Audience and time:", "text": "Students, staff and general users. No technical background needed. About 60 minutes: 35 min content, 15 min quiz and discussion, 10 min Q and A.", "wo": false }
+      ]
+    },
+    {
+      "title": "What Is Phishing?",
+      "kick": "THE HOOK, THE LINE AND THE SINKER",
+      "blocks": [
+        { "t": "call", "k": "def", "title": "Definition:", "text": "Phishing is a cyberattack in which an attacker pretends to be a trusted person or organization (bank, boss, courier, government, tech support) to trick you into revealing sensitive data, sending money, or opening something malicious." },
+        {
+          "t": "cards", "cols": 3,
+          "items": [
+            ["What attackers want", "Passwords and OTPs, card and bank details, personal ID data, access to company systems, and a way to install malware or ransomware."],
+            ["How it reaches you", "Email, SMS and WhatsApp, phone calls, QR codes, social media DMs, fake websites, fake Wi-Fi and even USB drives."],
+            ["What it costs", "Stolen money, account takeover, identity theft, ransomware outages, data breaches, legal and regulatory trouble, lost trust."]
+          ]
+        },
+        { "t": "call", "k": "warn", "title": "Why it matters:", "text": "Phishing attacks the person, not the software. Industry reports consistently find the human element involved in most breaches, and phishing is one of the top ways attackers get in." }
+      ]
+    },
+    {
+      "title": "Anatomy of a Phishing Attack",
+      "kick": "SIX STAGES - YOU CAN BREAK THE CHAIN AT STAGE 4",
+      "blocks": [
+        {
+          "t": "cards", "cols": 3,
+          "items": [
+            ["1. Research", "Attacker gathers names, roles, brands and habits from LinkedIn, social media and leaked data."],
+            ["2. Craft the bait", "Builds a convincing email, SMS or website copying a real brand or person."],
+            ["3. Deliver", "Sends it by email, text, call, QR code or social message, often at busy times."],
+            ["4. The hook", "You click, open, reply, call or enter data. This is your moment of power: pause here."],
+            ["5. Exploit", "Credentials are stolen, malware installs, or you authorize a payment or OTP."],
+            ["6. Cash in / spread", "Money moved, accounts taken over, data sold, or the attacker moves deeper into the network."]
+          ]
+        },
+        { "t": "call", "k": "aid", "title": "Memory aid:", "text": "Attackers need ONE mistake from you; you only need ONE pause. Pause, verify, then act." }
+      ]
+    },
+    {
+      "title": "Types of Phishing: Email-Based",
+      "kick": "SAME GOAL, DIFFERENT AIM",
+      "blocks": [
+        {
+          "t": "table",
+          "h": ["Type", "How it works", "Typical example"],
+          "rows": [
+            ["Bulk / mass phishing", "Generic message sent to thousands, hoping a few respond.", "'Your account will be suspended, verify now.'"],
+            ["Spear phishing", "Personalized to one person using real details (name, project, boss).", "Email mentioning your actual project and manager's name."],
+            ["Whaling", "Targets executives and senior officials with high-value requests.", "Fake legal notice or wire request to the CEO or CFO."],
+            ["Business Email Compromise (BEC)", "Impersonates an executive or vendor to redirect payments or data.", "'We changed bank accounts, pay this invoice to the new one.'"],
+            ["Clone phishing", "Copies a real email you received and swaps in a malicious link or file.", "'Resending the updated invoice' with a fake attachment."],
+            ["Account takeover", "A real, hacked account sends the phish, so it looks trusted.", "A friend's hacked mailbox shares a 'document' link."]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Types of Phishing: Alternative Forms",
+      "kick": "THE ATTACK IS NOT ONLY IN YOUR INBOX",
+      "blocks": [
+        {
+          "t": "table",
+          "h": ["Type", "How it works", "Typical example"],
+          "rows": [
+            ["Smishing (SMS / WhatsApp)", "Text message with a link or a number to call.", "'Parcel held, pay a small fee' or 'Your SIM will be blocked.'"],
+            ["Vishing (voice)", "Phone call from a fake bank, government or tech-support agent.", "'Share the OTP to stop a fraudulent transaction.'"],
+            ["Quishing (QR codes)", "Malicious QR code on posters, stickers, emails or fake menus.", "Sticker pasted over a real payment QR."],
+            ["Social media / angler", "Fake support accounts, giveaways and job offers in DMs and comments.", "'@BankSupport' replies to your complaint with a link."],
+            ["Pharming and fake sites", "Redirects you to a lookalike site or a fake login page.", "Bank site clone asking for card PIN."],
+            ["Evil twin Wi-Fi", "Rogue hotspot with a trusted-looking name that captures your data.", "'Free_Airport_WiFi' login portal asking for email password."]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Spot the Phishing Email: 8 Red Flags",
+      "kick": "IF YOU SEE ONE, STOP. IF YOU SEE TWO, IT IS A PHISH.",
+      "blocks": [
+        {
+          "t": "cards", "cols": 4,
+          "items": [
+            ["1. Suspicious sender", "Display name looks right but the real address is odd, misspelled or from a free/foreign domain."],
+            ["2. Urgency and threats", "'Act in 24 hours', 'account closed', 'legal action'. Pressure stops you from thinking."],
+            ["3. Generic greeting", "'Dear customer/user' from a company that should know your name."],
+            ["4. Mismatched links", "Hover shows a different address than the text. Shortened links hide the target."],
+            ["5. Unexpected attachments", "Invoices, resumes or 'documents' you did not expect, especially .html, .zip, .exe, .iso."],
+            ["6. Poor language / tone", "Typos, awkward grammar, wrong logo or a boss who suddenly writes differently."],
+            ["7. Asks for sensitive data", "Passwords, OTPs, PINs, card numbers. Legitimate organizations do not ask by email."],
+            ["8. Too good to be true", "Prizes, refunds, urgent unapplied job offers or random grants."]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Anatomy of a Phishing Email",
+      "kick": "SEE HOW MANY FLAGS YOU CAN FIND",
+      "blocks": [
+        {
+          "t": "mock",
+          "head": [
+            ["From", "PayPal Security &lt;support@paypa1-secure.example&gt;"],
+            ["Subject", "URGENT: Account limited. Act within 24 hours!"]
+          ],
+          "body": [
+            "Dear Customer,",
+            "We noticed unusual activity. Your account will be permanently limited unless you confirm your details today.",
+            "<a href='#' onclick='return false;' style='color:blue;text-decoration:underline;'>[ Verify My Account ]</a> shows paypal.com but hovering reveals http://paypa1-login.example",
+            "Please confirm your password, card number and OTP to restore access.",
+            "Attachment: Invoice_2291.html"
+          ],
+          "flags": [
+            "Look-alike domain: 'paypa1' uses the digit 1 instead of an 'l'.",
+            "Urgency plus an active lockout threat designed to force panic compliance.",
+            "Generic greeting: secure services generally utilize your customized name registry.",
+            "Link display text string and real backend destination node do not match.",
+            "Unexpected attachments. Web files (.html) can execute hidden script forms locally.",
+            "Direct credential requests. Trusted banks never extract clear-text security variables."
+          ]
+        }
+      ]
+    }
+  ]
+};
+const quizQuestions = [
+    {
+        q: "You receive an email from your enterprise CEO requesting an immediate wire transfer to a new vendor platform while bypassing standard authorization filters. What attack taxonomy is this?",
+        opts: ["Clone Phishing", "Business Email Compromise (BEC)", "Smishing Layer Vector"],
+        ans: 1,
+        fb: "Business Email Compromise (BEC) explicitly attempts to impersonate corporate executives or managers to trick employees into bypassing financial controls."
+    },
+    {
+        q: "A text message claims your package delivery is halted due to a missing processing fee and points to an external link. What is this threat called?",
+        opts: ["Vishing Execution", "Quishing Code Matrix", "Smishing"],
+        ans: 2,
+        fb: "SMS-delivered phishing messages or malicious links map directly to the Smishing classification threat boundary."
+    },
+    {
+        q: "An incoming alert contains a hyperlink that reads 'https://yourbank.com', but hovering over the text reveals a real address pointing to 'http://paypa1-secure-update.com'. What should you do?",
+        opts: ["Click it because the visible text on the screen safely shows your authentic provider.", "Flag it as an intrusion attempt because the display string and real destination URL do not match.", "Trust it only if the layout logo elements look highly realistic."],
+        ans: 1,
+        fb: "The true underlying hyperlink destination determines safety, not the text overlay. Attackers use lookalike domains (typosquatting) to steal inputs."
+    },
+    {
+        q: "What category of phishing targets high-profile individuals, such as CEOs, CFOs, or senior government officials, using custom intelligence?",
+        opts: ["Whaling", "Bulk / Mass Phishing", "Clone Phishing"],
+        ans: 0,
+        fb: "Whaling is a highly specialized form of spear phishing explicitly engineered to target high-value executives for massive asset extraction."
+    },
+    {
+        q: "You receive an unexpected email containing an attachment named 'Quarterly_Report.pdf.exe'. What is the critical risk factor here?",
+        opts: ["It is a large graphic vector file that might crash your web browser interface.", "It uses a hidden double extension (.exe) to trick you into executing a malicious program file.", "It is a standard PDF file that requires an update to your software viewer application."],
+        ans: 1,
+        fb: "Attackers hide executable files (.exe) behind standard extensions (.pdf) to deliver trojans or ransomware when double-clicked."
+    },
+    {
+        q: "An attacker calls your phone, pretending to be a bank security agent, and asks for your Multi-Factor Authentication (OTP) token to stop a fraud attempt. What vector is this?",
+        opts: ["Vishing (Voice Phishing)", "Pharming", "Quishing"],
+        ans: 0,
+        fb: "Vishing involves using rogue phone calls or voice interactions to socially engineer users into revealing sensitive verification secrets."
+    },
+    {
+        q: "What does an 'Evil Twin' attack involve in public environments like airports or coffee shops?",
+        opts: ["An identical duplicate website hosted on a cloud network.", "A rogue wireless hotspot named similarly to a trusted public network to capture raw traffic bytes.", "An identical phishing email sent to two separate corporate mailboxes simultaneously."],
+        ans: 1,
+        fb: "Evil Twin attacks deploy unauthorized Wi-Fi access points with legitimate-sounding names to intercept network packet payloads and logins."
+    },
+    {
+        q: "You find a printed QR code sticker posted over the top of an authentic payment sign at a local merchant. Scanning it takes you to an unverified web form. What vector is this?",
+        opts: ["Smishing Attack", "Quishing", "Evil Twin Wi-Fi Vector"],
+        ans: 1,
+        fb: "Quishing leverages weaponized QR codes to redirect targets away from authentic gateways onto malicious input-harvesting pages."
+    },
+    {
+        q: "An email from a trusted software platform contains no typos or grammar errors, but addresses you as 'Dear valued customer' instead of your name. Why should you be cautious?",
+        opts: ["Mass phishing templates use generic greetings because they automate distribution to thousands of accounts at once.", "Modern AI systems never create generic greetings.", "It proves the email is completely secure and authentic."],
+        ans: 0,
+        fb: "Bulk phishing relies on massive registries and generic greetings. Authentic platforms that host your profile will typically address you by your registered name."
+    },
+    {
+        q: "You accidentally clicked a link in a suspicious email and typed your corporate credentials into the landing page. What is your immediate incident response action?",
+        opts: ["Wait for the weekly automated system security scan to clear your workstation profile.", "Delete the email from your inbox and ignore the link completely.", "Change your account password immediately and report the compromise timeline to your IT security division."],
+        ans: 2,
+        fb: "Immediate remediation is critical. Changing your password stops ongoing threat extraction, and reporting it lets security analysts invalidate active rogue sessions."
+    }
+];
+
+let activeQ = 0;
+let scoreCount = 0;
+
+function renderTrainingModule() {
+    const mainEl = document.getElementById("m");
+    const navEl = document.getElementById("nav");
+    
+    D.S.forEach((sec, sIdx) => {
+        const navBtn = document.createElement("button");
+        navBtn.innerText = sec.title;
+        navBtn.onclick = () => {
+            document.getElementById(`sec-${sIdx}`).scrollIntoView({ behavior: "smooth" });
+            updateNavState(sIdx);
+        };
+        if(sIdx === 0) navBtn.className = "on";
+        navEl.appendChild(navBtn);
+
+        const secFrame = document.createElement("section");
+        secFrame.id = `sec-${sIdx}`;
+        
+        const kickTag = document.createElement("div");
+        kickTag.className = "k";
+        kickTag.innerText = sec.kick;
+        secFrame.appendChild(kickTag);
+
+        const secTitle = document.createElement("h2");
+        secTitle.className = "t";
+        secTitle.innerText = sec.title;
+        secFrame.appendChild(secTitle);
+
+        sec.blocks.forEach(block => {
+            if (block.t === "cards") {
+                const grid = document.createElement("div");
+                grid.className = `grid cols-${block.cols}`;
+                block.items.forEach(item => {
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.innerHTML = `<b>${item[0]}</b><p>${item[1]}</p>`;
+                    grid.appendChild(card);
+                });
+                secFrame.appendChild(grid);
+            } 
+            else if (block.t === "call") {
+                const callBox = document.createElement("div");
+                callBox.className = "call";
+                callBox.innerHTML = `<b>${block.title}</b><p>${block.text}</p>`;
+                secFrame.appendChild(callBox);
+            } 
+            else if (block.t === "table") {
+                const wrap = document.createElement("div");
+                wrap.className = "wrap";
+                let tHtml = `<table><thead><tr><th>${block.h[0]}</th><th>${block.h[1]}</th><th>${block.h[2]}</th></tr></thead><tbody>`;
+                block.rows.forEach(row => {
+                    tHtml += `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`;
+                });
+                tHtml += `</tbody></table>`;
+                wrap.innerHTML = tHtml;
+                secFrame.appendChild(wrap);
+            }
+            else if (block.t === "mock") {
+                const container = document.createElement("div");
+                container.className = "mock";
+                
+                const emBox = document.createElement("div");
+                emBox.className = "em";
+                
+                let headHtml = `<div class="em-head">`;
+                block.head.forEach(h => { headHtml += `<b>${h[0]}:</b> ${h[1]}<br>`; });
+                headHtml += `</div><div class="em-body">`;
+                block.body.forEach(b => { headHtml += `<p>${b}</p>`; });
+                headHtml += `</div>`;
+                emBox.innerHTML = headHtml;
+                
+                const descBox = document.createElement("div");
+                block.flags.forEach((f, fIdx) => {
+                    const desc = document.createElement("div");
+                    desc.className = "fl";
+                    desc.innerHTML = `<b>🚩 Indicator [${fIdx + 1}]</b> ${f}`;
+                    descBox.appendChild(desc);
+                });
+                
+                container.appendChild(emBox);
+                container.appendChild(descBox);
+                secFrame.appendChild(container);
+            }
+        });
+        mainEl.appendChild(secFrame);
+    });
+
+    const quizSec = document.createElement("section");
+    quizSec.id = "quiz-sec";
+    quizSec.innerHTML = `<div class="k">Interactive Validation</div><h2 class="t">Knowledge Retention Assessment</h2><div id="quiz"></div>`;
+    mainEl.appendChild(quizSec);
+    
+    const qBtn = document.createElement("button");
+    qBtn.innerText = "Interactive Quiz";
+    qBtn.onclick = () => {
+        document.getElementById("quiz-sec").scrollIntoView({ behavior: "smooth" });
+        updateNavState(D.S.length);
+    };
+    navEl.appendChild(qBtn);
+
+    renderQuizState();
+}
+
+function updateNavState(activeIdx) {
+    const btns = document.querySelectorAll("nav button");
+    btns.forEach((b, i) => b.className = (i === activeIdx) ? "on" : "");
+}
+
+function renderQuizState() {
+    const box = document.getElementById("quiz");
+    if(activeQ >= quizQuestions.length) {
+        box.innerHTML = `<h3>🎯 Validation Phase Complete!</h3><p>Your defensive diagnostic score: <b>${scoreCount} / ${quizQuestions.length}</b> threat scenarios resolved correctly.</p><button class='btn' onclick='resetQuiz()'>Restart Challenge Profile</button>`;
+        return;
+    }
+    
+    const data = quizQuestions[activeQ];
+    const progressPct = (activeQ / quizQuestions.length) * 100;
+    
+    let html = `<div class="pb"><i style="width:${progressPct}%"></i></div>`;
+    html += `<h4>Challenge ${activeQ + 1}: ${data.q}</h4><div id="opts-frame">`;
+    data.opts.forEach((o, idx) => {
+        html += `<button class="opt" onclick="processQuizSelection(${idx})">${o}</button>`;
+    });
+    html += `</div><div id="quiz-fb" class="fb" style="display:none"></div><button id="next-btn" class="btn" style="display:none" onclick="advanceQuizNext()">Next Question</button>`;
+    box.innerHTML = html;
+}
+
+function processQuizSelection(selIdx) {
+    const data = quizQuestions[activeQ];
+    const btns = document.querySelectorAll(".opt");
+    
+    btns.forEach((b, i) => {
+        b.disabled = true;
+        if(i === data.ans) b.classList.add("ok");
+        if(i === selIdx && selIdx !== data.ans) b.classList.add("no");
+    });
+    
+    if(selIdx === data.ans) scoreCount++;
+    
+    const fb = document.getElementById("quiz-fb");
+    fb.innerHTML = `<b>${selIdx === data.ans ? '✅ Check Passed' : '❌ Vulnerability Exploited'}</b><br><small>${data.fb}</small>`;
+    fb.style.display = "block";
+    document.getElementById("next-btn").style.display = "inline-block";
+}
+
+function advanceQuizNext() {
+    activeQ++;
+    renderQuizState();
+}
+
+function resetQuiz() {
+    activeQ = 0; scoreCount = 0;
+    renderQuizState();
+}
+
+window.onload = renderTrainingModule;
+</script>
+</body>
+</html>
